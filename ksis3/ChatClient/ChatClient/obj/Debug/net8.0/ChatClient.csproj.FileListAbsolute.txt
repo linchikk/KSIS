@@ -1,0 +1,14 @@
+C:\Users\Ангелина\Desktop\ksis\ChatClient\ChatClient\bin\Debug\net8.0\ChatClient.exe
+C:\Users\Ангелина\Desktop\ksis\ChatClient\ChatClient\bin\Debug\net8.0\ChatClient.deps.json
+C:\Users\Ангелина\Desktop\ksis\ChatClient\ChatClient\bin\Debug\net8.0\ChatClient.runtimeconfig.json
+C:\Users\Ангелина\Desktop\ksis\ChatClient\ChatClient\bin\Debug\net8.0\ChatClient.dll
+C:\Users\Ангелина\Desktop\ksis\ChatClient\ChatClient\bin\Debug\net8.0\ChatClient.pdb
+C:\Users\Ангелина\Desktop\ksis\ChatClient\ChatClient\obj\Debug\net8.0\ChatClient.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Ангелина\Desktop\ksis\ChatClient\ChatClient\obj\Debug\net8.0\ChatClient.AssemblyInfoInputs.cache
+C:\Users\Ангелина\Desktop\ksis\ChatClient\ChatClient\obj\Debug\net8.0\ChatClient.AssemblyInfo.cs
+C:\Users\Ангелина\Desktop\ksis\ChatClient\ChatClient\obj\Debug\net8.0\ChatClient.csproj.CoreCompileInputs.cache
+C:\Users\Ангелина\Desktop\ksis\ChatClient\ChatClient\obj\Debug\net8.0\ChatClient.dll
+C:\Users\Ангелина\Desktop\ksis\ChatClient\ChatClient\obj\Debug\net8.0\refint\ChatClient.dll
+C:\Users\Ангелина\Desktop\ksis\ChatClient\ChatClient\obj\Debug\net8.0\ChatClient.pdb
+C:\Users\Ангелина\Desktop\ksis\ChatClient\ChatClient\obj\Debug\net8.0\ChatClient.genruntimeconfig.cache
+C:\Users\Ангелина\Desktop\ksis\ChatClient\ChatClient\obj\Debug\net8.0\ref\ChatClient.dll
