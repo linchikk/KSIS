@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Cloud File Storage</title>
+    <link rel="stylesheet" type="text/css" href="/static/styles.css">
+</head>
+<body>
+    <h1>Cloud File Storage</h1>
+
+    <!-- Загрузить файл (PUT) -->
+    <section>
+        <h2>Загрузить файл</h2>
+        <form id="uploadForm">
+            <label for="filepath">Путь для файла:</label>
+            <input type="text" id="filepath" placeholder="например, docs/report.pdf" required>
+            <label for="file">Выберите файл:</label>
+            <input type="file" id="file" required>
+            <button type="submit">Загрузить</button>
+        </form>
+        <div id="uploadOutput" class="output-box"></div>
+    </section>
+
+    <!-- Просмотр содержимого каталога (GET) -->
+    <section>
+        <h2>Просмотр каталога</h2>
+        <form id="listForm">
+            <label for="dirpath">Путь к каталогу:</label>
+            <input type="text" id="dirpath" placeholder="например, images/">
+            <button type="submit">Показать</button>
+        </form>
+        <div id="listOutput" class="output-box"></div>
+    </section>
+
+    <!-- Получить информацию о файле (HEAD) -->
+    <section>
+        <h2>Информация о файле</h2>
+        <form id="headForm">
+            <label for="headpath">Путь к файлу:</label>
+            <input type="text" id="headpath" placeholder="например, data/config.json" required>
+            <button type="submit">Получить</button>
+        </form>
+        <div id="headOutput" class="output-box"></div>
+    </section>
+
+    <!-- Удалить файл/каталог (DELETE) -->
+    <section>
+        <h2>Удаление</h2>
+        <form id="deleteForm">
+            <label for="deletepath">Путь для удаления:</label>
+            <input type="text" id="deletepath" placeholder="например, temp/old_file.txt" required>
+            <button type="submit" class="danger">Удалить</button>
+        </form>
+        <div id="deleteOutput" class="output-box"></div>
+    </section>
+
+    <!-- Скачать файл (GET) -->
+    <section>
+        <h2>Скачать файл</h2>
+        <form id="downloadForm">
+            <label for="downloadpath">Путь к файлу:</label>
+            <input type="text" id="downloadpath" placeholder="например, backups/data.zip" required>
+            <button type="submit">Скачать</button>
+        </form>
+        <div id="downloadOutput" class="output-box"></div>
+    </section>
+
+    <script>
+        // Загрузка файла
+        document.getElementById('uploadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const filepath = document.getElementById('filepath').value;
+            const fileInput = document.getElementById('file');
+            const file = fileInput.files[0];
+            const uploadOutput = document.getElementById('uploadOutput');
+
+            if (!file) {
+                uploadOutput.innerHTML = "<div class='error'>Выберите файл</div>";
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                fetch('/' + filepath, {
+                    method: 'PUT',
+                    body: e.target.result
+                }).then(response => {
+                    if (response.status === 201) {
+                        uploadOutput.innerHTML = "<div class='success'>Файл создан</div>";
+                    } else if (response.status === 200) {
+                        uploadOutput.innerHTML = "<div class='success'>Файл обновлен</div>";
+                    } else {
+                        uploadOutput.innerHTML = `<div class='error'>Ошибка ${response.status}</div>`;
+                    }
+                });
+            };
+            reader.readAsArrayBuffer(file);
+        });
+
+        // Просмотр каталога
+        document.getElementById('listForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const dirpath = document.getElementById('dirpath').value;
+            fetch('/' + dirpath)
+                .then(response => response.json())
+                .then(data => {
+                    let html = '<ul class="file-list">';
+                    data.files.forEach(item => {
+                        html += `
+                        <li class="file-item">
+                            <div class="file-info">
+                                <span class="file-icon">
+                                    ${item.type === 'directory' ? 'Папка' : 'Файл'}
+                                </span>
+                                <span class="${item.type === 'directory' ? 'directory' : 'file'}">
+                                    ${item.name}${item.type === 'directory' ? '/' : ''}
+                                </span>
+                            </div>
+                            <span class="file-size">${item.size} bytes</span>
+                        </li>`;
+                    });
+                    html += '</ul>';
+                    document.getElementById('listOutput').innerHTML = html;
+                })
+                .catch(err => {
+                    document.getElementById('listOutput').innerHTML = `<div class='error'>${err}</div>`;
+                });
+        });
+
+        // Информация о файле
+        document.getElementById('headForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const headpath = document.getElementById('headpath').value;
+            fetch('/' + headpath, { method: 'HEAD' })
+                .then(response => {
+                    const output = document.getElementById('headOutput');
+                    if (response.ok) {
+                        output.innerHTML = `
+                            <div class="file-info">
+                                <div>
+                                    <p>Размер: <strong>${response.headers.get('Content-Length')} байт</strong></p>
+                                    <p>Изменен: <strong>${new Date(response.headers.get('Last-Modified')).toLocaleString()}</strong></p>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        output.innerHTML = `<div class='error'>Ошибка ${response.status}</div>`;
+                    }
+                });
+        });
+
+        // Удаление
+        document.getElementById('deleteForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const deletepath = document.getElementById('deletepath').value;
+            fetch('/' + deletepath, { method: 'DELETE' })
+                .then(response => {
+                    const output = document.getElementById('deleteOutput');
+                    if (response.status === 204) {
+                        output.innerHTML = "<div class='success'>Успешно удалено</div>";
+                    } else {
+                        output.innerHTML = `<div class='error'>Ошибка ${response.status}</div>`;
+                    }
+                });
+        });
+
+        // Скачивание
+        document.getElementById('downloadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const downloadpath = document.getElementById('downloadpath').value;
+            window.location.href = '/download/' + downloadpath;
+        });
+    </script>
+</body>
+</html>
